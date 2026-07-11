@@ -213,4 +213,4 @@ pytest tests/test_hierarchy_masking.py -v
 
 The mask test verifies the key invariant: picking a super at stage 1
 narrows stage 2 to only that super's parents and stage 3 to only that
-parent's leaves — not the full 196 / 4072.
+parent's leaves — not the full taxonomy.

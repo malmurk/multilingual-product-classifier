@@ -13,7 +13,7 @@ from src.taxonomy import load_taxonomy
 
 BACKBONE_DIR = Path("models/tokenizer")
 ONNX_DIR = Path("models/onnx")
-# Must match the CSV the models were trained against (4072-leaf shop grid,
+# Must match the CSV the models were trained against (the full shop grid,
 # not the old 3833-leaf canonical one). Overridable via env for flexibility.
 TAXONOMY_CSV = Path(os.getenv("TAXONOMY_CSV", "taxonomy_live.csv"))
 MAX_LENGTH = 128

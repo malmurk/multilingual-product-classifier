@@ -13,7 +13,7 @@ Expected layout (relative to the parent project root):
     models/tokenizer/                  — XLM-RoBERTa tokenizer
     models/onnx/{super,parent,leaf}_classifier.onnx
     taxonomy_pruned.csv        — pruned-leaf taxonomy
-    data/leaf_embeddings.npy           — (4072, 1024) L2-normalised
+    data/leaf_embeddings.npy           — (num_leaves, 1024) L2-normalised
     data/leaf_embedding_map.json       — {"0": leaf_name, ...}
 """
 
@@ -105,7 +105,7 @@ class GatedPredictor:
         print(f"[gated] E5 model on device: {self._device}", flush=True)
 
         print("[gated] Loading leaf embedding index ...", flush=True)
-        self._emb_matrix = np.load(str(EMBEDDINGS_FILE))   # (4072, 1024) L2-norm'd
+        self._emb_matrix = np.load(str(EMBEDDINGS_FILE))   # (num_leaves, 1024) L2-norm'd
         with open(MAP_FILE, encoding="utf-8") as f:
             self._emb_map = json.load(f)                   # {"0": leaf_name, ...}
 
