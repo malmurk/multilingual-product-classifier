@@ -1,0 +1,43 @@
+# Don't copy these into the image build context
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Datasets are never baked
+datasets/
+
+# Models: bake the ONNX artifacts only, exclude checkpoints/tokenizer/legacy
+models/checkpoints/
+models/tokenizer/
+models/onnx/_legacy_jsons/
+*.bin
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+
+# Environment / secrets
+.env
+.env.*
+*.key
+*.pem
+
+# IDE / OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docs
+docs/
+*.md

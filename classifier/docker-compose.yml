@@ -1,0 +1,52 @@
+version: "3.9"
+
+# Two services off one image:
+#   api     - HTTP endpoint for your backend to call (127.0.0.1:8000)
+#   worker  - background queue consumer (polls `unsorted` table)
+
+x-common: &common
+  build:
+    context: ..
+    dockerfile: classifier/Dockerfile
+  image: marketplace/classifier:latest
+  environment:
+    MODEL_DIR: /app/models
+    LOG_LEVEL: INFO
+    TOKENIZER: xlm-roberta-base
+  volumes:
+    # ONNX models (~3.3 GB) — mounted, not baked, so retrains can be
+    # deployed by rsync + restart instead of full image rebuild.
+    - ../models/onnx:/app/models:ro
+    # Persistent log of every prediction (active-learning retrain feed).
+    - ./data:/app/data
+  restart: unless-stopped
+
+services:
+  api:
+    <<: *common
+    container_name: classifier-api
+    command: ["uvicorn", "classifier.service:app", "--host", "0.0.0.0", "--port", "8000"]
+    ports:
+      # Bind to localhost only — your backend on the same host calls
+      # http://127.0.0.1:8000 directly.  No external exposure.
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    <<: *common
+    container_name: classifier-worker
+    command: ["python", "-m", "classifier.worker"]
+    environment:
+      MODEL_DIR: /app/models
+      LOG_LEVEL: INFO
+      TOKENIZER: xlm-roberta-base
+      DB_URL: ${DB_URL}
+      BATCH_SIZE: ${BATCH_SIZE:-100}
+      POLL_INTERVAL: ${POLL_INTERVAL:-1800}
+      THRESHOLD_LEAF_AUTO: ${THRESHOLD_LEAF_AUTO:-0.93}
+      RESOLVER_REFRESH_SECONDS: ${RESOLVER_REFRESH_SECONDS:-3600}
+      CORRECTIONS_PATH: /app/data/corrections.jsonl

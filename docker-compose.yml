@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  train:
+    build: .
+    volumes:
+      - .:/app
+    command: echo "Ready. Run: docker-compose run train python src/train.py --stage super"

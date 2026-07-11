@@ -1,0 +1,12 @@
+torch==2.2.2
+torch-directml==0.2.4.dev240320
+transformers==4.40.2
+sentence-transformers==2.7.0
+datasets==2.19.2
+scikit-learn==1.4.2
+openai==1.30.3
+onnx==1.16.1
+onnxruntime==1.18.1
+numpy==1.26.4
+tqdm==4.66.4
+pytest==8.2.2

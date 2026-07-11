@@ -1,0 +1,9 @@
+onnxruntime==1.18.1
+transformers==4.40.2
+tokenizers==0.19.1
+numpy==1.26.4
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.4
+# MariaDB driver for the live marketplace DB (pure-Python, easy on AlmaLinux):
+pymysql==1.1.1
