@@ -1,10 +1,10 @@
 """
-predict_full.py — Production predictor covering all 4,072 taxonomy leaves.
+predict_full.py — Production predictor covering the full taxonomy.
 
 Architecture:
   1. Cascaded ONNX classifier (super -> parent -> leaf) handles "hot" leaves.
   2. Confidence gate at threshold T (default loaded from data/retrieval_config.json).
-  3. multilingual-E5 retrieval over the full 4,072-leaf index handles low-confidence inputs.
+  3. multilingual-E5 retrieval over the full-taxonomy index handles low-confidence inputs.
 
 CLI:
     cd "<project-root>"
@@ -62,7 +62,7 @@ def _safe_title(title) -> str:
 
 class FullPredictor:
     """
-    Production-ready predictor covering all 4,072 taxonomy leaves.
+    Production-ready predictor covering the full taxonomy.
 
     Threshold is loaded from data/retrieval_config.json unless overridden.
     """

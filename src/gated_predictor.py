@@ -1,13 +1,13 @@
 """
 gated_predictor.py — Confidence-gated predictor: pruned-leaf ONNX classifier
-with multilingual-E5 retrieval fallback over the full 4,072-leaf taxonomy.
+with multilingual-E5 retrieval fallback over the full taxonomy.
 
 Routing rule:
     if max softmax prob (unmasked leaf classifier) >= threshold:
         use cascaded super -> parent -> leaf classifier (hot leaves)
     else:
         embed "query: <text>" with intfloat/multilingual-e5-large,
-        dot-product against the 4,072-leaf index, return top-1.
+        dot-product against the full-taxonomy index, return top-1.
 
 Expected layout (relative to the parent project root):
     models/tokenizer/                  — XLM-RoBERTa tokenizer
@@ -63,10 +63,10 @@ def mask_logits(logits: np.ndarray, valid_indices: list) -> np.ndarray:
 # ---------------------------------------------------------------------------
 class GatedPredictor:
     """
-    Confidence-gated predictor over all 4,072 taxonomy leaves.
+    Confidence-gated predictor over the full taxonomy.
 
     Hot leaves (those with training data) -> cascaded ONNX classifier.
-    Anything below `threshold` -> E5 retrieval over the full 4,072-leaf index.
+    Anything below `threshold` -> E5 retrieval over the full-taxonomy index.
     """
 
     def __init__(self, threshold: float = 0.3):
