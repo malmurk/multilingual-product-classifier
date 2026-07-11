@@ -18,10 +18,12 @@ Data-boost v3 equivalents live in `<data-boost-project>`: `data/train_v3.jsonl`,
 
 | File | Leaves | When to use |
 |---|---|---|
-| `taxonomy_live.csv` | ~583 (deployed) | Current production |
-| `taxonomy_universe.csv` | ~4111 (full universe) | Revival reference for Phase G |
-| `taxonomy_pruned.csv` | 570 (Phase A) | Phase A/B/C baseline |
-| `data/taxonomy_v3.csv` | 3,154–3,520 (Phase G/H) | v3 retrain (`<data-boost-project>`) |
+| `taxonomy_live.csv` | hundreds (deployed subset) | Current production |
+| `taxonomy_universe.csv` | thousands (full universe) | Revival reference |
+| `taxonomy_pruned.csv` | hundreds (pruned baseline) | Early-phase baseline |
+| `data/taxonomy_v3.csv` | thousands (v3) | v3 retrain (`<data-boost-project>`) |
+
+(Exact leaf counts are deployment-specific and removed for publication.)
 
 **Always set `TAXONOMY_CSV` env var explicitly.** Never rely on `train.py` default (`taxonomy_full.csv`).
 

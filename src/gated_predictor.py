@@ -1,10 +1,10 @@
 """
-gated_predictor.py — Confidence-gated predictor: 570-leaf ONNX classifier
+gated_predictor.py — Confidence-gated predictor: pruned-leaf ONNX classifier
 with multilingual-E5 retrieval fallback over the full 4,072-leaf taxonomy.
 
 Routing rule:
     if max softmax prob (unmasked leaf classifier) >= threshold:
-        use cascaded super -> parent -> leaf classifier (570 hot leaves)
+        use cascaded super -> parent -> leaf classifier (hot leaves)
     else:
         embed "query: <text>" with intfloat/multilingual-e5-large,
         dot-product against the 4,072-leaf index, return top-1.
@@ -12,7 +12,7 @@ Routing rule:
 Expected layout (relative to the parent project root):
     models/tokenizer/                  — XLM-RoBERTa tokenizer
     models/onnx/{super,parent,leaf}_classifier.onnx
-    taxonomy_pruned.csv        — 570-leaf taxonomy
+    taxonomy_pruned.csv        — pruned-leaf taxonomy
     data/leaf_embeddings.npy           — (4072, 1024) L2-normalised
     data/leaf_embedding_map.json       — {"0": leaf_name, ...}
 """
@@ -65,7 +65,7 @@ class GatedPredictor:
     """
     Confidence-gated predictor over all 4,072 taxonomy leaves.
 
-    Hot leaves (570 with training data) -> cascaded ONNX classifier.
+    Hot leaves (those with training data) -> cascaded ONNX classifier.
     Anything below `threshold` -> E5 retrieval over the full 4,072-leaf index.
     """
 

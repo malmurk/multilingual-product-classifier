@@ -19,7 +19,7 @@ A summary sheet reports the auto/manual split per product section.
 
 ## Calibration note
 
-This threshold was tuned for the Phase C model (570 leaves, `val_pruned`). It should be re-evaluated after every retrain because:
+This threshold was tuned for an earlier model snapshot (pruned leaf set, `val_pruned`). It should be re-evaluated after every retrain because:
 1. A larger leaf head (more classes) tends to lower per-class peak confidence.
 2. Adding training data from a new external marketplace source changes the confidence distribution for shop-shape inputs.
 

@@ -2,7 +2,7 @@
 predict_full.py — Production predictor covering all 4,072 taxonomy leaves.
 
 Architecture:
-  1. 570-leaf ONNX classifier (cascaded super -> parent -> leaf) handles "hot" leaves.
+  1. Cascaded ONNX classifier (super -> parent -> leaf) handles "hot" leaves.
   2. Confidence gate at threshold T (default loaded from data/retrieval_config.json).
   3. multilingual-E5 retrieval over the full 4,072-leaf index handles low-confidence inputs.
 
@@ -136,7 +136,7 @@ def main() -> None:
         prog="predict_full.py",
         description=(
             "Multilingual product classifier with E5 retrieval fallback.\n"
-            "Covers all 4,072 taxonomy leaves (570 hot + 3,502 dead via retrieval)."
+            "Covers the full taxonomy (hot leaves via the cascade, long-tail leaves via retrieval)."
         ),
     )
     parser.add_argument("--title", type=str, required=True,

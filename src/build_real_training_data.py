@@ -1,21 +1,22 @@
 """Join extracted products with the shop's 3-table taxonomy and produce
 training-ready JSONL with the full super -> parent -> leaf path.
 
-Shop schema
------------
-    super_categories  (id, name, name_ JSON{ro,ru})
-    parents           (id, super_category_id, name, name_ JSON{ro,ru})
-    categories        (id, parent_id, name, name_ JSON{ro,ru})
+Expected taxonomy shape (adapt to your own schema)
+---------------------------------------------------
+    super_categories  (id, name, localized names)
+    parents           (id, super_category_id, name, localized names)
+    categories        (id, parent_id, name, localized names)
 
     products.category_id  ->  categories.id  (leaves)
 
 Two modes:
 
-  --shop-taxonomy   use shop's own 4624-leaf tree as ground truth (recommended)
+  --shop-taxonomy   use the shop's own leaf tree as ground truth (recommended)
   default           match shop leaves against canonical taxonomy_full.csv
 
-Trash buckets (parents 15 "Vouchers" and 262 "Trash2", leaf 4899 "Trash3")
-are dropped by default; pass --keep-trash to include them.
+Junk buckets (voucher/placeholder categories — configure the IDs in
+TRASH_PARENT_IDS / TRASH_LEAF_IDS below) are dropped by default; pass
+--keep-trash to include them.
 
 Usage:
     python -m src.build_real_training_data --shop-taxonomy \
@@ -304,11 +305,11 @@ def _resolve_shop_leaves(shop, triples_norm, norm_leaf_to_paths, super_norm, fuz
 
 # -------------------------------------------------------------- trash filter
 
-# parent_id 15  = "Vouchers" (gift vouchers, not real products)
-# parent_id 262 = "Trash2"        (orphaned categories from an old migration)
-# leaf_id 4899  = "Trash3"        (catch-all dumping ground under parent 262)
-TRASH_PARENT_IDS = {15, 262}
-TRASH_LEAF_IDS = {4899}
+# Category ids for junk buckets in YOUR taxonomy (vouchers, orphaned
+# categories, catch-all dumping grounds). IDs removed for publication —
+# configure for your own data. Empty sets = nothing filtered.
+TRASH_PARENT_IDS: set = set()
+TRASH_LEAF_IDS: set = set()
 
 
 def _is_trash(shop_path: Tuple[dict, dict, dict]) -> bool:
@@ -548,7 +549,7 @@ def main() -> None:
     )
     ap.add_argument(
         "--shop-taxonomy", action="store_true",
-        help="Use shop tables as ground truth (4624 leaves). "
+        help="Use shop tables as ground truth. "
              "Skips canonical-CSV matching entirely — no rows become 'unmatched'.",
     )
     ap.add_argument(

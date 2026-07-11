@@ -2,7 +2,7 @@
 
 Three-stage multilingual transformer cascade that maps free-text product listings (Russian / Romanian titles, brands, descriptions) onto a 3,000+-leaf category taxonomy, with a confidence-gated split between automatic assignment and a human-review queue.
 
-Built for a production e-commerce catalog. The client is an Eastern-European marketplace (reference under NDA); code is published with their data, weights, and taxonomy removed.
+Built for a production e-commerce catalog. The client is an Eastern-European marketplace (reference under NDA); code is published with their data, weights, and taxonomy removed. This is a scrubbed re-publication: the original development history contained client-identifying data, so it was squashed for the public release.
 
 ## Problem
 

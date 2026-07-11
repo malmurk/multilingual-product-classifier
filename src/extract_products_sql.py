@@ -42,20 +42,14 @@ logger = logging.getLogger("extract_products_sql")
 
 # --- Columns as declared in the INSERT header (generated columns are
 # skipped by mysqldump, so they're NOT in the data rows).
+# NOTE: trimmed and genericized for publication — the original deployment
+# used the client's full column list. Set this to YOUR dump's INSERT column
+# order before running; EXPECTED_COLS is derived from it.
 COLUMNS: List[str] = [
-    "id", "uid", "import_from", "active", "sku", "uuid", "prod_code",
-    "mainImg", "category_id", "category_sort", "product_code", "link",
-    "title", "brand", "brand_id", "price", "price_discount",
-    "price_purchase", "transport_costs", "price_wholesale", "provider_name",
-    "comment", "quantity", "total_quantity_", "depozit_quantity",
-    "magazin_quantity", "description", "red_line", "video", "timer",
-    "timer_sort", "timer_from", "timer_to", "products_stock",
-    "product_discount", "product_discount_sort", "product_popular",
-    "product_popular_sort", "product_liquidation",
-    "product_liquidation_sort", "keywords", "created_at", "updated_at",
-    "parteneri", "furnizor_id", "title_", "link_", "description_",
-    "top_sales", "top_sales_all_period", "top_sales_today", "original",
-    "flag_new", "flag_reduceri", "youtube_url",
+    "id", "active", "sku", "category_id", "link", "title", "brand",
+    "brand_id", "price", "price_discount", "price_purchase", "quantity",
+    "total_quantity_", "description", "red_line", "keywords", "created_at",
+    "updated_at", "title_", "description_", "mainImg", "product_code",
 ]
 EXPECTED_COLS = len(COLUMNS)
 

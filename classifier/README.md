@@ -3,7 +3,7 @@
 Drop-in hierarchical categorizer for an e-commerce catalog. Takes a product
 title (+ optional brand / attributes / description) in Russian or
 Romanian and returns a category from the 3-level taxonomy
-(**19 super → 109 parent → 570 leaf**) defined in
+(illustratively **~20 super → ~100 parent → ~600 leaf** — exact counts vary by taxonomy version) defined in
 `taxonomy_live.csv` (your production taxonomy — the source of
 truth your backend assigns categories against). Built and proven on a
 500k-SKU production catalog at an Eastern-European marketplace
@@ -37,11 +37,11 @@ the branch chosen by the previous stage:
 | Stage | Classes in model | Choices after masking |
 |-------|------------------|----------------------|
 | 1. Super  | 19   | 19 (unrestricted) |
-| 2. Parent | 109  | **~6 on average, ~15 max** — only parents under the predicted super |
-| 3. Leaf   | 570  | **~5 on average** — only leaves under the predicted parent |
+| 2. Parent | ~100 | **~6 on average, ~15 max** — only parents under the predicted super |
+| 3. Leaf   | ~600 | **~5 on average** — only leaves under the predicted parent |
 
-Example for `"Компьютеры"`: stage 2 chooses among 7 parents (not 109),
-stage 3 among a handful of leaves (not 570). Each stage's confidence is
+Example for `"Компьютеры"`: stage 2 chooses among a handful of parents (not all ~100),
+stage 3 among a handful of leaves (not all ~600). Each stage's confidence is
 re-normalized within the narrowed set, so thresholds stay meaningful.
 
 ## Integration — 3 ways
@@ -126,7 +126,7 @@ The auto/manual decision is governed by `THRESHOLD_LEAF_AUTO`
 
 Manual rows include the model's best guess (`predicted_category`,
 `super_label`, `parent_label`, `leaf_label`, `confidence`) so the
-human reviewer sees the narrowed branch instead of all 570 leaves.
+human reviewer sees the narrowed branch instead of the full leaf list.
 
 Every prediction (auto-assigned, manual, or DB error) is also appended
 to `corrections.jsonl` — that's the source for the active-learning
@@ -169,7 +169,7 @@ The predictor's per-stage thresholds (`THRESHOLD_SUPER`, `THRESHOLD_PARENT`,
 `THRESHOLD_LEAF`) are kept low (`0.50` each) so the model always emits a
 leaf-level guess.  That guess is shown to the human reviewer alongside the
 super/parent labels, so they can fix it with one click instead of picking
-from 570 leaves blind.
+from the full leaf list blind.
 
 The HTTP service (`/classify`) still honours the per-stage thresholds —
 it returns `needs_review=true` and falls back to a parent/super category
@@ -184,8 +184,8 @@ retrain loop.
 
 ```
 super_classifier.onnx     # 19-class   (unrestricted)        — ~1.1 GB INT8
-parent_classifier.onnx    # 109-class  (masked at inference) — ~1.1 GB INT8
-leaf_classifier.onnx      # 570-class  (masked at inference) — ~1.1 GB INT8
+parent_classifier.onnx    # parent-level  (masked at inference) — ~1.1 GB INT8
+leaf_classifier.onnx      # leaf-level  (masked at inference) — ~1.1 GB INT8
 super_labels.json         # generated from taxonomy_live.csv
 parent_labels.json
 leaf_labels.json
